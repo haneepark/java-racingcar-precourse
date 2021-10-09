@@ -1,8 +1,13 @@
 package racinggame;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+
+import nextstep.utils.Randoms;
 
 public class RacingCarTest {
 	@Test
@@ -34,11 +39,26 @@ public class RacingCarTest {
 	}
 
 	@Test
-	void go() {
-		RacingCar car = new RacingCar("ruby");
+	void driveWithGoSign() {
+		try (final MockedStatic<MoveSignMaker> moveSignMakerMock = mockStatic(MoveSignMaker.class)) {
+			moveSignMakerMock.when(MoveSignMaker::getSign).thenReturn(MoveSign.GO);
+			RacingCar car = new RacingCar("ruby");
 
-		car.go();
+			car.drive();
 
-		assertThat(car.getPosition()).isEqualTo(1);
+			assertThat(car.getPosition()).isEqualTo(1);
+		}
+	}
+
+	@Test
+	void driveWithNoGoSign() {
+		try (final MockedStatic<MoveSignMaker> moveSignMakerMock = mockStatic(MoveSignMaker.class)) {
+			moveSignMakerMock.when(MoveSignMaker::getSign).thenReturn(MoveSign.NO_GO);
+			RacingCar car = new RacingCar("ruby");
+
+			car.drive();
+
+			assertThat(car.getPosition()).isEqualTo(0);
+		}
 	}
 }

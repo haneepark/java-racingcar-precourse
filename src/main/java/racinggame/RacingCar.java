@@ -13,7 +13,13 @@ public class RacingCar {
 		return name.toString();
 	}
 
-	public void go() {
+	public void drive() {
+		if (MoveSignMaker.getSign().equals(MoveSign.GO)) {
+			moveForward();
+		}
+	}
+
+	private void moveForward() {
 		position.moveForward();
 	}
 
