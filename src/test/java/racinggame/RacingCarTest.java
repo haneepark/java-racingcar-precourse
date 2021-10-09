@@ -9,6 +9,7 @@ public class RacingCarTest {
 	void createCar() {
 		RacingCar car = new RacingCar("ruby");
 		assertThat(car.getName()).isEqualTo("ruby");
+		assertThat(car.getPosition()).isEqualTo(0);
 	}
 
 	@Test
@@ -30,5 +31,14 @@ public class RacingCarTest {
 		assertThatIllegalArgumentException().isThrownBy(() -> {
 			new RacingCar("");
 		});
+	}
+
+	@Test
+	void go() {
+		RacingCar car = new RacingCar("ruby");
+
+		car.go();
+
+		assertThat(car.getPosition()).isEqualTo(1);
 	}
 }
