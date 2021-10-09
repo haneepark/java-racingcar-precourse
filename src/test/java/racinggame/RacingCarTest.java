@@ -10,4 +10,25 @@ public class RacingCarTest {
 		RacingCar car = new RacingCar("ruby");
 		assertThat(car.getName()).isEqualTo("ruby");
 	}
+
+	@Test
+	void createCarWithLongName() {
+		assertThatIllegalArgumentException().isThrownBy(() -> {
+			new RacingCar("tomato");
+		});
+	}
+
+	@Test
+	void createCarWithNullName() {
+		assertThatIllegalArgumentException().isThrownBy(() -> {
+			new RacingCar(null);
+		});
+	}
+
+	@Test
+	void createCarWithEmptyName() {
+		assertThatIllegalArgumentException().isThrownBy(() -> {
+			new RacingCar("");
+		});
+	}
 }
