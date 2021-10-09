@@ -1,13 +1,10 @@
-package racinggame;
+package racinggame.model;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
-
-import nextstep.utils.Randoms;
 
 public class RacingCarTest {
 	@Test
