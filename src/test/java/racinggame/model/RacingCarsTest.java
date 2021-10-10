@@ -145,4 +145,45 @@ public class RacingCarsTest {
 			}
 		}
 	}
+
+	@Nested
+	class getCarsAt {
+		@Test
+		void allCarsAtZero() {
+			RacingCars carsAtPosition = cars.getCarsAt(new CarPosition(0));
+			Map<String, Integer> result = carsAtPosition.getRacingStatusMap();
+
+			assertThat(result.size()).isEqualTo(3);
+			assertThat(result.get("finn")).isEqualTo(0);
+			assertThat(result.get("jake")).isEqualTo(0);
+			assertThat(result.get("bagel")).isEqualTo(0);
+		}
+
+		@Test
+		void NoCarAt2() {
+			RacingCars carsAtPosition = cars.getCarsAt(new CarPosition(2));
+			Map<String, Integer> result = carsAtPosition.getRacingStatusMap();
+
+			assertThat(result.size()).isEqualTo(0);
+		}
+
+		@Test
+		void OneCarAt2() {
+			try (final MockedStatic<MoveSignMaker> moveSignMakerMock = mockStatic(MoveSignMaker.class)) {
+				moveSignMakerMock.when(MoveSignMaker::getSign)
+					.thenReturn(
+						MoveSign.NO_GO, MoveSign.GO, MoveSign.NO_GO,
+						MoveSign.NO_GO, MoveSign.GO, MoveSign.NO_GO
+					);
+
+				cars.drive();
+				cars.drive();
+				RacingCars carsAtPosition = cars.getCarsAt(new CarPosition(2));
+				Map<String, Integer> result = carsAtPosition.getRacingStatusMap();
+
+				assertThat(result.size()).isEqualTo(1);
+				assertThat(result.get("jake")).isEqualTo(2);
+			}
+		}
+	}
 }

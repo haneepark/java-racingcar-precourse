@@ -46,4 +46,8 @@ public class RacingCar {
 		RacingCar racingCar = (RacingCar)o;
 		return Objects.equals(position, racingCar.position) && Objects.equals(name, racingCar.name);
 	}
+
+	public boolean isAt(CarPosition position) {
+		return this.position.equals(position);
+	}
 }

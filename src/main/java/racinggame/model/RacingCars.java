@@ -1,7 +1,6 @@
 package racinggame.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,5 +38,15 @@ public class RacingCars {
 			winningCar = RacingCar.ahead(winningCar, car);
 		}
 		return winningCar.getPosition();
+	}
+
+	public RacingCars getCarsAt(CarPosition position) {
+		List<RacingCar> carsAtPosition = new ArrayList<>();
+		for (RacingCar car : this.cars) {
+			if (car.isAt(position)) {
+				carsAtPosition.add(car);
+			}
+		}
+		return new RacingCars(carsAtPosition);
 	}
 }
