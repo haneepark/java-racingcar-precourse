@@ -11,7 +11,7 @@ public class RacingCarTest {
 	void createCar() {
 		RacingCar car = new RacingCar("ruby");
 		assertThat(car.getName()).isEqualTo("ruby");
-		assertThat(car.getPosition()).isEqualTo(0);
+		assertThat(car.getPosition()).isEqualTo(new CarPosition(0));
 	}
 
 	@Test
@@ -43,7 +43,7 @@ public class RacingCarTest {
 
 			car.drive();
 
-			assertThat(car.getPosition()).isEqualTo(1);
+			assertThat(car.getPosition()).isEqualTo(new CarPosition(1));
 		}
 	}
 
@@ -55,7 +55,19 @@ public class RacingCarTest {
 
 			car.drive();
 
-			assertThat(car.getPosition()).isEqualTo(0);
+			assertThat(car.getPosition()).isEqualTo(new CarPosition(0));
+		}
+	}
+
+	@Test
+	void ahead() {
+		try (final MockedStatic<MoveSignMaker> moveSignMakerMock = mockStatic(MoveSignMaker.class)) {
+			moveSignMakerMock.when(MoveSignMaker::getSign).thenReturn(MoveSign.GO);
+			RacingCar ahead = new RacingCar("finn");
+			RacingCar behind = new RacingCar("jake");
+			ahead.drive();
+
+			assertThat(RacingCar.ahead(ahead, behind)).isEqualTo(ahead);
 		}
 	}
 }

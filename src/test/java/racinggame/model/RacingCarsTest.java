@@ -4,10 +4,12 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
@@ -17,7 +19,7 @@ public class RacingCarsTest {
 	@BeforeEach
 	void setUp() {
 		List<String> names = Arrays.asList("finn", "jake", "bagel");
-		cars = new RacingCars(names);
+		cars = RacingCars.of(names);
 	}
 
 	@Test
@@ -36,7 +38,7 @@ public class RacingCarsTest {
 	void createCarsWithInvalidName() {
 		assertThatIllegalArgumentException().isThrownBy(() -> {
 			List<String> names = Arrays.asList("finn", "jake", "bagel", "bubblegum");
-			new RacingCars(names);
+			RacingCars.of(names);
 		});
 	}
 
@@ -47,11 +49,31 @@ public class RacingCarsTest {
 				.thenReturn(MoveSign.NO_GO, MoveSign.GO, MoveSign.NO_GO);
 
 			cars.drive();
-
 		 	Map<String, Integer> map = cars.getRacingStatusMap();
+
 			assertThat(map.get("finn")).isEqualTo(0);
 			assertThat(map.get("jake")).isEqualTo(1);
 			assertThat(map.get("bagel")).isEqualTo(0);
 		}
 	}
+
+	@Test
+	void driveTwice() {
+		try (final MockedStatic<MoveSignMaker> moveSignMakerMock = mockStatic(MoveSignMaker.class)) {
+			moveSignMakerMock.when(MoveSignMaker::getSign)
+				.thenReturn(
+					MoveSign.NO_GO, MoveSign.GO, MoveSign.NO_GO,
+					MoveSign.NO_GO, MoveSign.GO, MoveSign.NO_GO
+				);
+
+			cars.drive();
+			cars.drive();
+			Map<String, Integer> map = cars.getRacingStatusMap();
+
+			assertThat(map.get("finn")).isEqualTo(0);
+			assertThat(map.get("jake")).isEqualTo(2);
+			assertThat(map.get("bagel")).isEqualTo(0);
+		}
+	}
+
 }
