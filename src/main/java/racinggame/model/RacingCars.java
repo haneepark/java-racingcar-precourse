@@ -1,7 +1,9 @@
 package racinggame.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RacingCars {
 	List<RacingCar> cars;
@@ -10,8 +12,19 @@ public class RacingCars {
 		cars = new ArrayList<>();
 
 		for (String name : names) {
-			RacingCar car = new RacingCar(name);
-			cars.add(car);
+			cars.add(new RacingCar(name));
 		}
+	}
+
+	public void drive() {
+		cars.forEach(RacingCar::drive);
+	}
+
+	public Map<String, Integer> getRacingStatusMap() {
+		Map<String, Integer> map = new HashMap<>();
+		for (RacingCar car : cars) {
+			map.put(car.getName(), car.getPosition());
+		}
+		return map;
 	}
 }
