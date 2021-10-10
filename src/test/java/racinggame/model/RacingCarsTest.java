@@ -186,4 +186,89 @@ public class RacingCarsTest {
 			}
 		}
 	}
+
+	@Nested
+	class getWinningCars {
+		@Test
+		void oneCarWithNoMove() {
+			RacingCars cars = RacingCars.of(Collections.singletonList("finn"));
+
+			RacingCars winningCars = cars.getWinningCars();
+			List<String> result = winningCars.getAllCarNames();
+
+			assertThat(result.size()).isEqualTo(1);
+			assertThat(result.get(0)).isEqualTo("finn");
+		}
+
+		@Test
+		void threeCarsWithNoMove() {
+			RacingCars winningCars = cars.getWinningCars();
+			List<String> result = winningCars.getAllCarNames();
+
+			assertThat(result.size()).isEqualTo(3);
+			assertThat(result.contains("finn")).isTrue();
+			assertThat(result.contains("jake")).isTrue();
+			assertThat(result.contains("bagel")).isTrue();
+		}
+
+		@Test
+		void threeCarsWithOneMove() {
+			try (final MockedStatic<MoveSignMaker> moveSignMakerMock = mockStatic(MoveSignMaker.class)) {
+				moveSignMakerMock.when(MoveSignMaker::getSign)
+					.thenReturn(
+						MoveSign.NO_GO, MoveSign.GO, MoveSign.NO_GO
+					);
+
+				cars.drive();
+				RacingCars winningCars = cars.getWinningCars();
+				List<String> result = winningCars.getAllCarNames();
+
+				assertThat(result.size()).isEqualTo(1);
+				assertThat(result.get(0)).isEqualTo("jake");
+			}
+		}
+
+		@Test
+		void threeCarsWinAlone() {
+			try (final MockedStatic<MoveSignMaker> moveSignMakerMock = mockStatic(MoveSignMaker.class)) {
+				moveSignMakerMock.when(MoveSignMaker::getSign)
+					.thenReturn(
+						MoveSign.NO_GO, MoveSign.GO, MoveSign.GO,
+						MoveSign.NO_GO, MoveSign.GO, MoveSign.GO,
+						MoveSign.NO_GO, MoveSign.GO, MoveSign.NO_GO
+					);
+
+				cars.drive();
+				cars.drive();
+				cars.drive();
+				RacingCars winningCars = cars.getWinningCars();
+				List<String> result = winningCars.getAllCarNames();
+
+				assertThat(result.size()).isEqualTo(1);
+				assertThat(result.get(0)).isEqualTo("jake");
+			}
+		}
+
+		@Test
+		void threeCarsTwoWinners() {
+			try (final MockedStatic<MoveSignMaker> moveSignMakerMock = mockStatic(MoveSignMaker.class)) {
+				moveSignMakerMock.when(MoveSignMaker::getSign)
+					.thenReturn(
+						MoveSign.GO, MoveSign.GO, MoveSign.GO,
+						MoveSign.NO_GO, MoveSign.GO, MoveSign.GO,
+						MoveSign.NO_GO, MoveSign.GO, MoveSign.GO
+					);
+
+				cars.drive();
+				cars.drive();
+				cars.drive();
+				RacingCars winningCars = cars.getWinningCars();
+				List<String> result = winningCars.getAllCarNames();
+
+				assertThat(result.size()).isEqualTo(2);
+				assertThat(result.contains("jake")).isTrue();
+				assertThat(result.contains("bagel")).isTrue();
+			}
+		}
+	}
 }

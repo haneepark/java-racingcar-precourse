@@ -32,6 +32,11 @@ public class RacingCars {
 		return map;
 	}
 
+	public RacingCars getWinningCars() {
+		CarPosition winningPosition = findWinningPosition();
+		return getCarsAt(winningPosition);
+	}
+
 	public CarPosition findWinningPosition() {
 		RacingCar winningCar = cars.get(0);
 		for (RacingCar car : cars) {
@@ -48,5 +53,15 @@ public class RacingCars {
 			}
 		}
 		return new RacingCars(carsAtPosition);
+	}
+
+	public List<String> getAllCarNames() {
+		List<String> result = new ArrayList<>();
+
+		for (RacingCar car : cars) {
+			result.add(car.getName());
+		}
+
+		return result;
 	}
 }
