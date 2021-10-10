@@ -37,7 +37,7 @@ public class RacingCars {
 		return getCarsAt(winningPosition);
 	}
 
-	public CarPosition findWinningPosition() {
+	CarPosition findWinningPosition() {
 		RacingCar winningCar = cars.get(0);
 		for (RacingCar car : cars) {
 			winningCar = RacingCar.ahead(winningCar, car);
@@ -45,7 +45,7 @@ public class RacingCars {
 		return winningCar.getPosition();
 	}
 
-	public RacingCars getCarsAt(CarPosition position) {
+	RacingCars getCarsAt(CarPosition position) {
 		List<RacingCar> carsAtPosition = new ArrayList<>();
 		for (RacingCar car : this.cars) {
 			if (car.isAt(position)) {
