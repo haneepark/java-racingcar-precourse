@@ -76,4 +76,73 @@ public class RacingCarsTest {
 		}
 	}
 
+	@Nested
+	class WinningPosition {
+		@Test
+		void oneCarWithNoMove() {
+			RacingCars cars = RacingCars.of(Collections.singletonList("finn"));
+
+			CarPosition winningPosition = cars.findWinningPosition();
+
+			assertThat(winningPosition).isEqualTo(new CarPosition(0));
+		}
+
+		@Test
+		void threeCarsWithNoMove() {
+			CarPosition winningPosition = cars.findWinningPosition();
+
+			assertThat(winningPosition).isEqualTo(new CarPosition(0));
+		}
+
+		@Test
+		void threeCarsWithOneMove() {
+			try (final MockedStatic<MoveSignMaker> moveSignMakerMock = mockStatic(MoveSignMaker.class)) {
+				moveSignMakerMock.when(MoveSignMaker::getSign)
+					.thenReturn(
+						MoveSign.NO_GO, MoveSign.GO, MoveSign.NO_GO
+						);
+
+				cars.drive();
+				CarPosition winningPosition = cars.findWinningPosition();
+
+				assertThat(winningPosition).isEqualTo(new CarPosition(1));
+			}
+		}
+
+		@Test
+		void threeCarsWinAlone() {
+			try (final MockedStatic<MoveSignMaker> moveSignMakerMock = mockStatic(MoveSignMaker.class)) {
+				moveSignMakerMock.when(MoveSignMaker::getSign)
+					.thenReturn(
+						MoveSign.NO_GO, MoveSign.GO, MoveSign.GO,
+						MoveSign.NO_GO, MoveSign.GO, MoveSign.GO,
+						MoveSign.NO_GO, MoveSign.GO, MoveSign.NO_GO
+					);
+
+				cars.drive();
+				cars.drive();
+				cars.drive();
+				CarPosition winningPosition = cars.findWinningPosition();
+
+				assertThat(winningPosition).isEqualTo(new CarPosition(3));
+			}
+		}
+
+		@Test
+		void threeCarsTwoWinners() {
+			try (final MockedStatic<MoveSignMaker> moveSignMakerMock = mockStatic(MoveSignMaker.class)) {
+				moveSignMakerMock.when(MoveSignMaker::getSign)
+					.thenReturn(
+						MoveSign.NO_GO, MoveSign.GO, MoveSign.GO,
+						MoveSign.NO_GO, MoveSign.GO, MoveSign.GO
+					);
+
+				cars.drive();
+				cars.drive();
+				CarPosition winningPosition = cars.findWinningPosition();
+
+				assertThat(winningPosition).isEqualTo(new CarPosition(2));
+			}
+		}
+	}
 }

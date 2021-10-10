@@ -32,4 +32,12 @@ public class RacingCars {
 		}
 		return map;
 	}
+
+	public CarPosition findWinningPosition() {
+		RacingCar winningCar = cars.get(0);
+		for (RacingCar car : cars) {
+			winningCar = RacingCar.ahead(winningCar, car);
+		}
+		return winningCar.getPosition();
+	}
 }
